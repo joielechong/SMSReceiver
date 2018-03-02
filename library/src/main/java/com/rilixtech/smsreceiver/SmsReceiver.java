@@ -1,16 +1,9 @@
 package com.rilixtech.smsreceiver;
 
-import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
+import java.util.Observable;
+import java.util.Observer;
 
-public class SmsReceiver {
+public class SmsReceiver implements Observer {
 
   private static SmsReceiver instance;
 
@@ -28,52 +21,42 @@ public class SmsReceiver {
     return instance;
   }
 
-  @NonNull private LocalBroadcastManager localBroadcastManager;
-
-  @NonNull private ResultListener resultListener;
+  private ResultListener resultListener;
 
   public interface ResultListener {
     void onSmsReceived(String sender, String message);
   }
 
-  private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-    @Override public void onReceive(Context context, Intent intent) {
-      if (intent.getAction() == null) {
-        Log.e("SmsReceiver", "Something wrong with the SmsReceiver!");
-        return;
-      }
-      if (intent.getAction().equals(SmsBroadcastReceiver.INTENT_ACTION_SMS)) {
-        String receivedSender = intent.getStringExtra(SmsBroadcastReceiver.KEY_SMS_SENDER);
-        String receivedMessage = intent.getStringExtra(SmsBroadcastReceiver.KEY_SMS_MESSAGE);
-        resultListener.onSmsReceived(receivedSender != null ? receivedSender : "",
-            receivedMessage != null ? receivedMessage : "");
-      }
-    }
-  };
+  @Override public void update(Observable o, Object arg) {
+    if (arg instanceof Sms) {
+      Sms sms = (Sms) arg;
 
-  public void registerReceiver(Activity activity, ResultListener listener) {
-    localBroadcastManager = LocalBroadcastManager.getInstance(activity);
-    IntentFilter intentFilter = new IntentFilter();
-    intentFilter.addAction(SmsBroadcastReceiver.INTENT_ACTION_SMS);
-    localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
+      resultListener.onSmsReceived(sms.getSender(), sms.getMessage());
+    }
+  }
+
+  public void register() {
+    SmsObservable.getInstance().addObserver(this);
+  }
+
+  public void setResultListener(ResultListener listener) {
     resultListener = listener;
   }
 
-  public void unRegisterReceiver() {
-    localBroadcastManager.unregisterReceiver(broadcastReceiver);
+  public void unregister() {
+    SmsObservable.getInstance().deleteObserver(this);
   }
 
-  public void initialize(@Nullable String beginIndex, @Nullable String endIndex,
-      @Nullable String... smsSenderNumbers) {
+  public void initialize(String beginIndex, String endIndex, String... smsSenderNumbers) {
     SmsReceiverConfig.INSTANCE.initializeSmsConfig(beginIndex, endIndex, smsSenderNumbers);
   }
 
   /**
    * Initialize sms receiver to receive all sms from any number.
-   * @param beginIndex start of text to recognize.
-   * @param endIndex end of text to recognize.
+   * @param beginIndex start of text to recognize can be null.
+   * @param endIndex end of text to recognize can be null.
    */
-  public void initialize(@Nullable String beginIndex, @Nullable String endIndex) {
+  public void initialize(String beginIndex, String endIndex) {
     SmsReceiverConfig.INSTANCE.initializeSmsConfig(beginIndex, endIndex);
   }
 

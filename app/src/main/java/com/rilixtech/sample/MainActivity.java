@@ -29,22 +29,22 @@ public class MainActivity extends AppCompatActivity {
   }
 
   private void startSmsReceiver() {
-    SmsReceiver.getInstance().registerReceiver(this, new SmsReceiver.ResultListener() {
+    SmsReceiver.getInstance().register();
+    SmsReceiver.getInstance().initialize();
+    SmsReceiver.getInstance().setResultListener(new SmsReceiver.ResultListener() {
       @Override public void onSmsReceived(String sender, String message) {
         String text = mTvSms.getText().toString() + "\n" +
             "Sender = " + sender + ", " + "Message = " + message;
         mTvSms.setText(text);
       }
     });
-
-    SmsReceiver.getInstance().initialize();
   }
 
   @Override protected void onDestroy() {
     super.onDestroy();
     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
       if(ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED) {
-        SmsReceiver.getInstance().unRegisterReceiver();
+        SmsReceiver.getInstance().unregister();
       }
     }
   }

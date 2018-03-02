@@ -1,7 +1,5 @@
 package com.rilixtech.smsreceiver;
 
-import android.support.annotation.Nullable;
-
 public enum SmsReceiverConfig {
   INSTANCE;
 
@@ -16,22 +14,21 @@ public enum SmsReceiverConfig {
    * @param endIndex end of text message to get
    * @param smsSenderNumbers numbers of sender. Can be null to receive all message from any sender.
    */
-  void initializeSmsConfig(@Nullable String beginIndex, @Nullable String endIndex,
-      @Nullable String... smsSenderNumbers) {
+  void initializeSmsConfig(String beginIndex, String endIndex, String... smsSenderNumbers) {
     this.beginIndex = beginIndex;
     this.endIndex = endIndex;
     this.smsSenderNumbers = smsSenderNumbers;
   }
 
-  @Nullable public String getBeginIndex() {
+  public String getBeginIndex() {
     return beginIndex;
   }
 
-  @Nullable public String getEndIndex() {
+  public String getEndIndex() {
     return endIndex;
   }
 
-  @Nullable public String[] getSmsSenderNumbers() {
+  public String[] getSmsSenderNumbers() {
     return smsSenderNumbers;
   }
 }

@@ -5,22 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.BuildConfig;
-import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.SmsMessage;
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class SmsBroadcastReceiver extends BroadcastReceiver {
-  static final String INTENT_ACTION_SMS = "intent_action_sms";
-  public static final String KEY_SMS_SENDER = "key_sms_sender";
-  public static final String KEY_SMS_MESSAGE = "key_sms_message";
-
   private static final String INTENT_ACTION_SMS_RECEIVED = "android.provider.Telephony.SMS_RECEIVED";
 
   @Override public void onReceive(Context context, Intent intent) {
@@ -60,47 +51,33 @@ public class SmsBroadcastReceiver extends BroadcastReceiver {
 
           if (smsSenderNumbers != null) {
             if (!TextUtils.isEmpty(messageFrom) && smsSenderNumbers.contains(messageFrom)) {
-              String receivedMessage = "";
+              StringBuilder receivedMessage = new StringBuilder();
               for (SmsMessage smsMessage : smsMessages) {
-                receivedMessage = receivedMessage + smsMessage.getMessageBody();
+                receivedMessage.append(smsMessage.getMessageBody());
               }
-              sendBroadcast(context, messageFrom, receivedMessage);
+              notifyObservers(new Sms(messageFrom, getSmsCode(receivedMessage.toString())));
             } else {
-              sendBroadcast(context, null, null);
+              notifyObservers(new Sms("", ""));
             }
           } else {
-            String receivedMessage = "";
+            StringBuilder receivedMessage = new StringBuilder();
             for (SmsMessage smsMessage : smsMessages) {
-              receivedMessage = receivedMessage + smsMessage.getMessageBody();
+              receivedMessage.append(smsMessage.getMessageBody());
             }
-            sendBroadcast(context, messageFrom, receivedMessage);
+            notifyObservers(new Sms(messageFrom, getSmsCode(receivedMessage.toString())));
           }
+
+          abortBroadcast();
         }
       }
     }
   }
 
-  private void sendBroadcast(@NonNull Context context, @Nullable String messageFrom, @Nullable String smsMessage) {
-    Intent broadcastIntent = new Intent(INTENT_ACTION_SMS);
-
-    String smsCode = null;
-    if (smsMessage != null) {
-      try {
-        smsCode = getSmsCode(smsMessage);
-      } catch (StringIndexOutOfBoundsException e) {
-        if (BuildConfig.DEBUG) {
-          Log.d(SmsBroadcastReceiver.class.getName(), e.getMessage());
-        }
-      }
-    }
-
-    broadcastIntent.putExtra(KEY_SMS_SENDER, messageFrom);
-    broadcastIntent.putExtra(KEY_SMS_MESSAGE, smsCode);
-    LocalBroadcastManager.getInstance(context).sendBroadcast(broadcastIntent);
+  private void notifyObservers(Sms sms) {
+    SmsObservable.getInstance().updateValue(sms);
   }
 
-  @Nullable private String getSmsCode(@NonNull String message) {
-    Log.d("SmsBroadcastReceiver", "message =" + message);
+  private String getSmsCode(String message) {
     String beginIndexSingleton = SmsReceiverConfig.INSTANCE.getBeginIndex();
     String endIndexSingleton = SmsReceiverConfig.INSTANCE.getEndIndex();
 
