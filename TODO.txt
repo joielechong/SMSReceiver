@@ -1,0 +1,9 @@
+need to read the following:
+
+https://developer.android.com/reference/android/provider/Telephony.Sms.Intents.html#SMS_RECEIVED_ACTION
+
+https://stackoverflow.com/questions/4117701/android-sms-broadcast-receiver
+
+https://developer.android.com/reference/android/telephony/SmsMessage.html
+
+https://developer.android.com/reference/android/provider/Telephony.Sms.Intents.html
