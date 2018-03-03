@@ -61,6 +61,14 @@ public class SmsReceiver implements Observer {
   }
 
   /**
+   * Initilize sms receiver to receive sms from specific numbers.
+   * @param smsSenderNumbers number of sender.
+   */
+  public void initialize(String... smsSenderNumbers) {
+    SmsReceiverConfig.INSTANCE.initializeSmsConfig(null, null, smsSenderNumbers);
+  }
+
+  /**
    * Initialize sms receiver to receive all sms from any number as it is.
    */
   public void initialize() {

@@ -55,16 +55,19 @@ public class SmsBroadcastReceiver extends BroadcastReceiver {
               for (SmsMessage smsMessage : smsMessages) {
                 receivedMessage.append(smsMessage.getMessageBody());
               }
-              notifyObservers(new Sms(messageFrom, getSmsCode(receivedMessage.toString())));
+              //notifyObservers(new Sms(messageFrom, getSmsCode(receivedMessage.toString())));
+              notifyObserverForSMS(messageFrom, receivedMessage.toString());
             } else {
-              notifyObservers(new Sms("", ""));
+              //notifyObservers(new Sms("", ""));
+              notifyObserverForSMS("", "");
             }
           } else {
             StringBuilder receivedMessage = new StringBuilder();
             for (SmsMessage smsMessage : smsMessages) {
               receivedMessage.append(smsMessage.getMessageBody());
             }
-            notifyObservers(new Sms(messageFrom, getSmsCode(receivedMessage.toString())));
+            //notifyObservers(new Sms(messageFrom, getSmsCode(receivedMessage.toString())));
+            notifyObserverForSMS(messageFrom, receivedMessage.toString());
           }
 
           abortBroadcast();
@@ -77,7 +80,7 @@ public class SmsBroadcastReceiver extends BroadcastReceiver {
     SmsObservable.getInstance().updateValue(sms);
   }
 
-  private String getSmsCode(String message) {
+  private void notifyObserverForSMS(String from, String message) {
     String beginIndexSingleton = SmsReceiverConfig.INSTANCE.getBeginIndex();
     String endIndexSingleton = SmsReceiverConfig.INSTANCE.getEndIndex();
 
@@ -85,9 +88,26 @@ public class SmsBroadcastReceiver extends BroadcastReceiver {
       int startIndex = message.indexOf(beginIndexSingleton);
       int endIndex = message.indexOf(endIndexSingleton);
 
-      return message.substring(startIndex, endIndex).replace(beginIndexSingleton, "").trim();
+      String msg = message.substring(startIndex, endIndex).replace(beginIndexSingleton, "").trim();
+      if(!msg.isEmpty()) {
+        notifyObservers(new Sms(from, msg));
+      }
     } else {
-      return message;
+      notifyObservers(new Sms(from, message));
     }
   }
+
+  //private String getSmsCode(String message) {
+  //  String beginIndexSingleton = SmsReceiverConfig.INSTANCE.getBeginIndex();
+  //  String endIndexSingleton = SmsReceiverConfig.INSTANCE.getEndIndex();
+  //
+  //  if (beginIndexSingleton != null && endIndexSingleton != null) {
+  //    int startIndex = message.indexOf(beginIndexSingleton);
+  //    int endIndex = message.indexOf(endIndexSingleton);
+  //
+  //    return message.substring(startIndex, endIndex).replace(beginIndexSingleton, "").trim();
+  //  } else {
+  //    return message;
+  //  }
+  //}
 }

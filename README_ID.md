@@ -1,20 +1,19 @@
 # SMSReceiver
 
-A Simple library to receive sms. Can be used for [OTP-SMS](https://en.wikipedia.org/wiki/One-time_password) handling.
+Library sederhana untuk menerima sms. Dapat dipergunakan untuk menangani [OTP-SMS](https://en.wikipedia.org/wiki/One-time_password).
 
-Support API Level >= 9
+Mendukung API Level >= 9
 
-Dokumentasi versi Bahasa Indonesia README_ID.md
+English version documentation README.md
 
-OTP-SMS is commonly used to verify user registration in Android application.
-This library simplify the process to receive the SMS registration so developer don't need to implement SMS receiver to receive the broadcast message by the Android.
+OTP-SMS umumnya digunakan untuk melakukan verifikasi pengguna saat hendak menggunakan aplikasi Android.
+Library in menyederhanakan proses penerimaan registrasi via SMS sehingga developer tidak perlu lagi mengimplementasikan penerima SMS untuk menerima pesan broadcast oleh Android.
 
-Only need 5 lines of codes to receive the sms!
+Hanya membutuhkan kira-kira 7 baris kode untuk dapat menerima sms!
 
+### Cara menggunakan
 
-### How to use
-
-Step 1. Add the JitPack repository in your root build.gradle at the end of repositories:
+Langkah 1. tambahkan repositori JitPack di root build.gradle:
 
     allprojects {
             repositories {
@@ -23,13 +22,13 @@ Step 1. Add the JitPack repository in your root build.gradle at the end of repos
             }
     }
 
-Step 2. Add the dependency
+Langkah 2. Tambahkan dependency
 
     implementation 'com.github.joielechong:smsreceiver:0.9'
 
-Step 3. Add the receiver
+Langkah 3. Tambahkan receiver
 
-     // Start to receive the sms
+     // mulai menerima sms
      SmsReceiver.getInstance().register();
      SmsReceiver.getInstance().initialize();
 
@@ -42,8 +41,8 @@ Step 3. Add the receiver
         }
       });
 
-Step 4. Stop receiving the sms
-You can stop receiving sms anytime. When in an Activity, you can stop receiving sms when the Activity is stopped or destroyed:
+Langkah 4. Menghentikan penerimaan sms
+Kamu dapat menghentikan penerimaan sms kapanpun. Saat di Activity, kamu dapat menghentikan penerimaan sms saat Activity dihentikan atau diselesaikan:
 
 
      @Override
@@ -52,40 +51,40 @@ You can stop receiving sms anytime. When in an Activity, you can stop receiving 
          SmsReceiver.getInstance().unregister();
      }
 
-### Configuration to receive SMS
+### Konfigurasi untuk menerima SMS
 
-- To receive all sms you only need to use the following:
+- Untuk menerima semua sms kamu hanya perlu menggunakan kode berikut:
 
          SmsReceiver.getInstance().initialize();
 
-- To receive sms only from specific numbers, you can use the following:
+- Untuk menerima sms hany dari nomor tertentu, kamu dapat menggunakan:
 
          SmsReceiver.getInstance().initialize("082368636477");
 
-         // Or
+         // Atau
          SmsReceiver.getInstance().initialize("082368636477", "082368636478");
 
-   you can specify any number as you want. There is no limitation of total number arguments.
+   kamu dapat menentukan sebanyak apapun nomor pengirimnya. Tidak ada batasan untuk jumlah nomor pengirim.
 
-- To receive sms from any number but with specific text constraint, for example, when waiting for OTP-SMS with the following format:
+- Untuk menerima sms dari nomor apapun tetapi dengan batasan teks tertentu, sebagai contoh, saat menunggu OTP-SMS dengan format berikut:
 
        Application activation code is GA-12345.
 
-  where the activation code is GA-12345. You can use the following:
+  dimana kode aktivasi adalah GA-12345. Kamu dapat menggunakan:
 
            SmsReceiver.getInstance().initialize("GA", "", "12345");
 
-- You can also receive the activation code as the above regardless of the sender number with:
+- Kamu juga dapat menerima aktivasi kode seperti sebelumnya tanpa mempedulikan nomor pengirim dengan:
 
            SmsReceiver.getInstance().initialize("GA", "");
 
 
-# Developed By
+# Dikembangkan oleh
 
  * [Joielechong](http://www.github.com/joielechong)
 
 
-# License
+# Lisensi
 
     Copyright 2018 Joielechong
 
