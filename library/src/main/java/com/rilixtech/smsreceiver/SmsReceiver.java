@@ -31,7 +31,7 @@ public class SmsReceiver implements Observer {
     if (arg instanceof Sms) {
       Sms sms = (Sms) arg;
 
-      resultListener.onSmsReceived(sms.getSender(), sms.getMessage());
+      resultListener.onSmsReceived(sms.sender, sms.message);
     }
   }
 
@@ -57,7 +57,7 @@ public class SmsReceiver implements Observer {
    * @param endIndex end of text to recognize can be null.
    */
   public void initialize(String beginIndex, String endIndex) {
-    SmsReceiverConfig.INSTANCE.initializeSmsConfig(beginIndex, endIndex);
+    SmsReceiverConfig.INSTANCE.initializeSmsConfig(beginIndex, endIndex, null);
   }
 
   /**

@@ -30,11 +30,12 @@ public class MainActivity extends AppCompatActivity {
 
   private void startSmsReceiver() {
     SmsReceiver.getInstance().register();
-    SmsReceiver.getInstance().initialize();
+    SmsReceiver.getInstance().initialize("myIM3", "");
     SmsReceiver.getInstance().setResultListener(new SmsReceiver.ResultListener() {
       @Override public void onSmsReceived(String sender, String message) {
         String text = mTvSms.getText().toString() + "\n" +
             "Sender = " + sender + ", " + "Message = " + message;
+        Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
         mTvSms.setText(text);
       }
     });
