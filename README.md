@@ -1,10 +1,10 @@
 # SMSReceiver
 
-A Simple library to receive sms. Can be used for [OTP-SMS](https://en.wikipedia.org/wiki/One-time_password) handling.
+Dokumentasi versi Bahasa Indonesia [README_ID.md](https://github.com/joielechong/SMSReceiver/blob/master/README_ID.md)
+
+**A Simple library to receive sms. Can be used for [OTP-SMS](https://en.wikipedia.org/wiki/One-time_password) handling.**
 
 Support API Level >= 9
-
-Dokumentasi versi Bahasa Indonesia README_ID.md
 
 OTP-SMS is commonly used to verify user registration in Android application.
 This library simplify the process to receive the SMS registration so developer don't need to implement SMS receiver to receive the broadcast message by the Android.
